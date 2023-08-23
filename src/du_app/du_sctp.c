@@ -228,6 +228,19 @@ uint8_t duSctpCfgReq(SctpParams sctpCfg)
    fillDestNetAddr(&ricParams.destIpNetAddr, &ricParams.destIpAddr);
    fillAddrLst(&ricParams.destAddrLst, &ricParams.destIpAddr);
 
+/* Fill p5 Params */
+/*
+   p5Params.destIpAddr.ipV4Pres  = sctpCfg.p5IpAddr.ipV4Pres;
+   p5Params.destIpAddr.ipV4Addr  = sctpCfg.p5IpAddr.ipV4Addr;
+   p5Params.destPort             = sctpCfg.p5Port;
+   p5Params.itfState             = DU_SCTP_DOWN;
+   p5Params.srcPort              = sctpCfg.duPort[p5_INTERFACE];
+   p5Params.recvMsgSet           = ROK;
+   memset (&p5Params.sockFd, -1, sizeof(CmInetFd));
+   fillDestNetAddr(&p5Params.destIpNetAddr, &p5Params.destIpAddr);
+   fillAddrLst(&p5Params.destAddrLst, &p5Params.destIpAddr);
+*/
+
 /* Fill AddressList */
    fillAddrLst(&localAddrLst, &sctpCfg.duIpAddr);
 
