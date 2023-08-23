@@ -1373,7 +1373,7 @@ uint8_t duLayerConfigComplete()
    {
       DU_LOG("\nERROR  -->  DU_APP : Failed configuring Sctp Params");
       ret = RFAILED;
-   }
+   }/*Creat F1、E2、P5 SCTP connect*/
    if((ret = duSctpAssocReq(F1_INTERFACE)) != ROK)
    {
       DU_LOG("\nERROR  -->  DU_APP : Failed to send AssocReq F1");

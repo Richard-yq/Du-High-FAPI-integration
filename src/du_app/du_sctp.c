@@ -333,17 +333,17 @@ uint8_t establishReq(DuSctpDestCb *paramPtr)
    Pst pst;
    uint8_t ret = ROK;
    socket_type = CM_INET_STREAM;
-
+/*Client*/
    if((ret = cmInetSocket(socket_type, &paramPtr->sockFd, IPPROTO_SCTP)) != ROK)
-   {
+   {  /*socket()*/
       DU_LOG("\nERROR  -->  SCTP : Failed while opening a socket in ODU");
    } 
    else if((ret = cmInetSctpBindx(&paramPtr->sockFd, &localAddrLst, paramPtr->srcPort)) != ROK)
-   {
+   {  /*bind()*/
       DU_LOG("\nERROR  -->  SCTP:  Failed during Binding in ODU");
    }
    else if((ret = sctpSetSockOpts(&paramPtr->sockFd)) != ROK)
-   {
+   {  /*Sets socket options*/
       DU_LOG("\nERROR  -->  SCTP : Failed to set Socket Opt in ODU");
    }     
    else
@@ -354,7 +354,7 @@ uint8_t establishReq(DuSctpDestCb *paramPtr)
          ret = RFAILED;
       }
       else 
-      {
+      { /*connect()*/
          ret = cmInetSctpConnectx(&paramPtr->sockFd, &paramPtr->destIpNetAddr, &paramPtr->destAddrLst, paramPtr->destPort);
          /* 115 error_code indicates that Operation is in progress and hence ignored if SctpConnect failed due to this */
          if(ret == 18)             
@@ -364,14 +364,14 @@ uint8_t establishReq(DuSctpDestCb *paramPtr)
       }
    }
    if((ret == ROK) & (paramPtr->itfState == DU_SCTP_DOWN))
-   {
+   {/*Change state to connecting*/
       paramPtr->itfState = DU_SCTP_CONNECTING;
    }
 
    /* Post the EVTSTARTPOLL Msg */
    if(!pollingState)
    {
-      pollingState = TRUE;
+      pollingState = TRUE;/*Fill sctp post event EVTSTARTPOLL*/
       duFillSctpPst(&pst, EVTSTARTPOLL);
    }
    
@@ -426,7 +426,13 @@ uint8_t duSctpAssocReq(uint8_t itfType)
          paramPtr = &ricParams;
          ret = establishReq(paramPtr);
          break;
-      }
+      }/* establish P5 request
+      case p5_INTERFACE:
+      {
+         paramPtr = &p5Params;
+         ret = establishReq(paramPtr);
+         break;
+      }*/
       default:
       {
          DU_LOG("\nERROR  -->  SCTP : Invalid Interface Type %d", itfType);
