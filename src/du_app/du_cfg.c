@@ -370,6 +370,8 @@ uint8_t fillDuPort(uint16_t *duPort)
 #else
    duPort[F1_INTERFACE]   = F1_SCTP_PORT;     /* DU Port idx  0 38472 */
    duPort[E2_INTERFACE]   = E2_SCTP_PORT;    /* RIC Port idx 1 36421 */
+   /*Add for P5*/
+   //duPort[p5_INTERFACE]   = p5_SCTP_PORT;
 #endif
    return ROK;
 }
@@ -592,12 +594,12 @@ uint8_t fillServCellCfgCommSib(SrvCellCfgCommSib *srvCellCfgComm)
  *         RFAILED - failure
  *
  * ****************************************************************/
-
+/*Add P5(SCTP)、P7(UDP) config*/
 uint8_t readCfg()
 {
    uint8_t srvdCellIdx, bandIdx, sliceIdx, plmnIdx;
    uint8_t brdcstPlmnIdx, freqBandIdx, srvdPlmnIdx;
-   uint32_t ipv4_du, ipv4_cu, ipv4_ric;
+   uint32_t ipv4_du, ipv4_cu, ipv4_ric; //ipv4_p5,
    MibParams mib;
    Sib1Params sib1;
    F1TaiSliceSuppLst *taiSliceSuppLst;
@@ -625,9 +627,13 @@ uint8_t readCfg()
    cmInetAddr((S8*)DU_IP_V4_ADDR, &ipv4_du);
    cmInetAddr((S8*)CU_IP_V4_ADDR, &ipv4_cu);
    cmInetAddr((S8*)RIC_IP_V4_ADDR, &ipv4_ric);
+   /*Add P5 address*/
+   //cmInetAddr((S8*)P5_IP_V4_ADDR, &ipv4_p5);
 
    duCfgParam.sctpParams.cuPort = F1_SCTP_PORT;
    duCfgParam.sctpParams.ricPort = E2_SCTP_PORT;
+   /*Add P5 port*/
+   //duCfgParam.sctpParams.p5Port = p5_SCTP_PORT;
 #endif
 
    fillDuPort(duCfgParam.sctpParams.duPort);
@@ -640,6 +646,9 @@ uint8_t readCfg()
 
    /* Fill RIC Params */
    duCfgParam.sctpParams.ricIpAddr.ipV4Addr = ipv4_ric;
+
+   /* Fill p5 address */
+   //duCfgParam.sctpParams.p5IpAddr.ipV4Addr = ipv4_p5;
 
    /* EGTP Parameters */
    duCfgParam.egtpParams.localIp.ipV4Pres = TRUE;
@@ -1070,6 +1079,7 @@ uint8_t duReadCfg()
    memset(&duCfgParam, 0, sizeof(DuCfgParams));
 
    //Read configs into duCfgParams
+   /*This function read du_cfg.h config into duCfgParam*/
    if(readCfg() != ROK)
    {
       DU_LOG("\nERROR  -->  DU_APP : Reading configuration failed");
