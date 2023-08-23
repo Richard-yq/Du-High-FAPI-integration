@@ -1,0 +1,10 @@
+# Version information
+Merge "H release documentation [Task-ID: ODUHIGH-515]" h-release
+author	Harshita Lal <harshita.lal@radisys.com>	
+Fri, 23 Jun 2023 15:11:37 +0800 (07:11 +0000)
+committer	Gerrit Code Review <gerrit@o-ran-sc.org>	
+Fri, 23 Jun 2023 15:11:37 +0800 (07:11 +0000)
+commit	04d3fabd57b479ad8ec2c5cb7f92924670c55546
+tree	64f5589bdd8eb49b61b2999f31a17d01b6abb0be	tree | snapshot
+parent	e440deae5fa6f2cb8d96cdb4714ef25e3dba2413	commit | diff
+parent	799160e805914b3131eb2b22f66c7a38a1bf9733	commit | diff
