@@ -140,7 +140,7 @@ uint8_t sctpActvTsk(Pst *pst, Buffer *mBuf)
          {
             switch(pst->event)
             {
-               case EVTSTARTPOLL:
+               case EVTSTARTPOLL: /*After socket connect fill pst->event as EVTSTARTPOLL*/
                {
                   sctpSockPoll();
                   break;
@@ -697,7 +697,7 @@ uint8_t sctpNtfyHdlr(CmInetSctpNotification *ntfy, uint8_t *itfState)
  *
  * ****************************************************************/
 
-uint8_t  processPolling(sctpSockPollParams *pollParams, CmInetFd *sockFd, uint32_t *timeoutPtr, CmInetMemInfo *memInfo, bool recvMsgSet)
+uint8_t processPolling(sctpSockPollParams *pollParams, CmInetFd *sockFd, uint32_t *timeoutPtr, CmInetMemInfo *memInfo, bool recvMsgSet)
 {
    uint8_t ret = ROK;
    CM_INET_FD_SET(sockFd, &pollParams->readFd);
@@ -705,6 +705,7 @@ uint8_t  processPolling(sctpSockPollParams *pollParams, CmInetFd *sockFd, uint32
    if(CM_INET_FD_ISSET(sockFd, &pollParams->readFd))
    {
       CM_INET_FD_CLR(sockFd, &pollParams->readFd);
+      /*SCTP receive*/
       ret = cmInetSctpRecvMsg(sockFd, &pollParams->addr, &pollParams->port, memInfo, &(pollParams->mBuf), &pollParams->bufLen, &pollParams->info, &pollParams->flag, &pollParams->ntfy);
         
       if(ret != ROK)
@@ -752,6 +753,12 @@ uint8_t  processPolling(sctpSockPollParams *pollParams, CmInetFd *sockFd, uint32
          {  
             sendToDuApp(pollParams->mBuf, EVENT_RIC_DATA);
          }
+         /* Add port for FAPI P5
+         else if(P5Params.itfState & (pollParams->port == P5Params.destPort))
+         {  
+            processp5message();
+            sendToLowerMac(pollParams->mBuf, EVENT_P5_DATA);
+         }  */  
 
          else
          {
@@ -783,10 +790,13 @@ uint8_t sctpSockPoll()
    uint32_t timeout;
    uint32_t *timeout_Ptr;
    CmInetMemInfo memInfo;
-   sctpSockPollParams f1PollParams, e2PollParams;
+   sctpSockPollParams f1PollParams, e2PollParams;/*p5PollParams*/
 
    memset(&f1PollParams, 0, sizeof(sctpSockPollParams));
    memset(&e2PollParams, 0, sizeof(sctpSockPollParams));
+   /*memory set
+   memset(&5PollParams, 0, sizeof(sctpSockPollParams));
+   */
 
    if (f1Params.sockFd.blocking & ricParams.sockFd.blocking)
    {
@@ -804,6 +814,9 @@ uint8_t sctpSockPoll()
 
    CM_INET_FD_ZERO(&f1PollParams.readFd);
    CM_INET_FD_ZERO(&e2PollParams.readFd);
+   /*file descriptor zero
+   CM_INET_FD_ZERO(&p5PollParams.readFd);
+   */
 
    DU_LOG("\nINFO   -->  SCTP : Polling started at DU\n");
    while(true)
@@ -822,6 +835,16 @@ uint8_t sctpSockPoll()
             DU_LOG("\nERROR  -->  SCTP : Failed to RecvMsg for E2\n");
          }
       }
+      /*process p5 polling message
+      if(p5Params.itfState)
+      {
+         if((ret = processPolling(&p5PollParams, &p5Params.sockFd, timeout_Ptr, &memInfo, p5Params.recvMsgSet)) != ROK)
+         {
+            DU_LOG("\nERROR  -->  SCTP : Failed to RecvMsg for E2\n");
+         }
+      }
+      
+      */
    };
    return (ret);
 }/* End of sctpSockPoll() */
