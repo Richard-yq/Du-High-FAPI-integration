@@ -1384,6 +1384,12 @@ uint8_t duLayerConfigComplete()
       DU_LOG("\nERROR  -->  DU_APP : Failed to send AssocReq E2");
       ret = RFAILED;
    }
+   /* p5 SCTP associate request
+    if((ret = duSctpAssocReq(p5_INTERFACE)) != ROK)
+   {
+      DU_LOG("\nERROR  -->  DU_APP : Failed to send AssocReq E2");
+      ret = RFAILED;
+   } */
 
    return (ret); 
 } 
