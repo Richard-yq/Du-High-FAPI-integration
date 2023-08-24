@@ -136,18 +136,18 @@ uint8_t sctpStartReq()
    socket_type = CM_INET_STREAM;
 
    if(sctpCb.numAssoc)
-   {
-
+   { /*If we choose OSC DU High as the socket server, we will refer to the code here to create a p5 SCTP port.*/
+/*Server*/
       if((ret = cmInetSocket(socket_type, &sctpCb.e2LstnSockFd, IPPROTO_SCTP) != ROK))
-      {
+      {/*socket*/
          DU_LOG("\nERROR  -->  SCTP : Socket[%d] coudnt open for listening", sctpCb.e2LstnSockFd.fd);
       } 
       else if((ret = cmInetSctpBindx(&sctpCb.e2LstnSockFd, &sctpCb.localAddrLst, sctpCb.sctpCfg.e2SctpPort)) != ROK)
-      {
+      {/*bind*/
          DU_LOG("\nERROR  -->  SCTP: Binding failed at RIC");
       }
       else if(ret = cmInetListen(&sctpCb.e2LstnSockFd, 1) != ROK)
-      {
+      {/*listen*/
          DU_LOG("\nERROR  -->  SCTP: Unable to accept the connection at CU");
          DU_LOG("\nERROR  -->  SCTP : Listening on socket failed");
          cmInetClose(&sctpCb.e2LstnSockFd);
@@ -158,7 +158,7 @@ uint8_t sctpStartReq()
          for(assocIdx=0; assocIdx < sctpCb.numAssoc; assocIdx++)
          {
             if((ret = sctpAccept(&sctpCb.assocCb[assocIdx])) != ROK)
-            {
+            {/*accept*/
                DU_LOG("\nERROR  -->  SCTP: Unable to accept the connection at RIC");
             }
          }
