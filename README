@@ -8,3 +8,5 @@ commit	04d3fabd57b479ad8ec2c5cb7f92924670c55546
 tree	64f5589bdd8eb49b61b2999f31a17d01b6abb0be	tree | snapshot
 parent	e440deae5fa6f2cb8d96cdb4714ef25e3dba2413	commit | diff
 parent	799160e805914b3131eb2b22f66c7a38a1bf9733	commit | diff
+---
+I wrote some notes on the hackMD page:https://hackmd.io/@Richard-quan/rkOIt2RFn/%2FU08SmD20QGCm5VvakpKXqA#SCTP-configure
