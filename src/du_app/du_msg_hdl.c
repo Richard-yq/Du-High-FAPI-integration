@@ -1391,6 +1391,8 @@ uint8_t duLayerConfigComplete()
       ret = RFAILED;
    } */
 
+   /*If Du high be SCTP server and Start DU-SCTP to listen on incoming connection */
+   sctpStartReq()
    return (ret); 
 } 
 
