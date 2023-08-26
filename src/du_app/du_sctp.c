@@ -928,7 +928,7 @@ uint8_t sctpStartReq()
       {/*socket*/
          DU_LOG("\nERROR  -->  SCTP : Socket[%d] coudnt open for listening", sctpCb.p5LstnSockFd.fd);
       } 
-      else if((ret = cmInetSctpBindx(&sctpCb.p5LstnSockFd, &sctpCb.localAddrLst, sctpCb.sctpCfg.p5SctpPort)) != ROK)
+      else if((ret = cmInetSctpBindx(&sctpCb.p5LstnSockFd, &sctpCb.localAddrLst, sctpCb.sctpCfg.p5SctpInfo.Port)) != ROK)
       {/*bind*/
          DU_LOG("\nERROR  -->  SCTP: Binding failed at DU");
       }

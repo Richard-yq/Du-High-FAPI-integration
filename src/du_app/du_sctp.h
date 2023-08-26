@@ -25,6 +25,12 @@
 #define DU_SCTP_UP 1
 #define DU_SCTP_CONNECTING 2
 #define MAX_RETRY 5
+/*-----*/
+/*For du is socket server */
+//#define MAX_IPV6_LEN 16
+//#define MAX_L1_SUPPORTED 2
+//#define MAX_REMOTE_DU_SUPPORTED 1
+//#define MAX_ASSOC_SUPPORTED (MAX_L1_SUPPORTED + MAX_REMOTE_DU_SUPPORTED)
 
 /* Global variable declaration */
 uint8_t   socket_type;      /* Socket type */
@@ -33,6 +39,23 @@ bool connUp;           /* Is connection up */
 bool pollingState; 
 CmInetNetAddrLst localAddrLst;
 CmInetNetAddrLst remoteAddrLst;
+
+/*------*/
+/*For du is socket server */
+/*typedef enum
+{
+   F1_INTERFACE,
+   XN_INTERFACE,
+   p5_INTERFACE
+}InterfaceType;
+
+typedef enum
+{
+   SERVER,
+   CLIENT
+}NodeType;
+*/
+/*------*/
 
 typedef struct
 {
@@ -64,10 +87,74 @@ typedef struct
 DuSctpDestCb f1Params;     /* SCTP configurations at DU */ 
 DuSctpDestCb ricParams;    /* SCTP configurations at DU */ 
 
+/*-------------------------------------------*/
+/*Add sctpcb for du is socket server*/
+
+typedef struct
+{
+   InterfaceType    intf;             /* FAPI Interface */
+   uint32_t         destId;           /* For F1 interface, this is DU ID. For Xn, this is remote CU ID For p5 interface, this is L1 ID*/
+   uint16_t         destPort;         /* p5 PORTS */
+   Bool             bReadFdSet;
+   CmInetFd         sockFd;           /* Socket file descriptor */
+   CmInetAddr       peerAddr;
+   CmInetNetAddrLst destAddrLst;      /* Remote IP address list */
+   CmInetNetAddr    destIpNetAddr;    /* Remote IP network address */ 
+   Bool             connUp;           /* Is connection up */
+}p5SctpAssocCb;
+
+typedef struct ipAddr
+{
+ Bool      ipV4Pres;
+ uint32_t  ipV4Addr;
+ Bool      ipV6Pres;
+ uint8_t   ipV6Addr[MAX_IPV6_LEN];
+}SctpIpAddr;
+
+typedef struct sctpDestInfo
+{
+   SctpIpAddr  destIpAddr;
+   uint16_t    destPort;
+}SctpDestInfo;
+
+typedef struct sctpCfgPerIntf
+{
+   uint16_t       port;
+   NodeType       localNodeType; /* Local node acts as Server or client while establishing SCTP assoc */
+   uint8_t        numDestNode; 
+   SctpDestInfo   destCb[MAX_ASSOC_SUPPORTED];
+}SctpCfgPerIntf;
+
+typedef struct p5SctpParams
+{
+   SctpIpAddr     localIpAddr;
+   SctpCfgPerIntf f1SctpInfo;
+   SctpCfgPerIntf xnSctpInfo;
+   SctpCfgPerIntf p5SctpInfo;
+}p5SctpParams;
+
+typedef struct
+{
+   p5SctpParams     sctpCfg;
+   CmInetNetAddrLst localAddrLst;
+   CmInetFd         f1LstnSockFd;       /* Listening Socket file descriptor for F1 association */
+   CmInetFd         xnLstnSockFd;       /* Listening Socket file descriptor for Xn association */
+   CmInetFd         p5LstnSockFd;       /* Listening Socket file descriptor for p5 association */
+   NodeType         localXnNodeType;    /* Local node acts as Server or client while establishing SCTP assoc at Xn interface */
+   uint8_t          numAssoc;
+   p5SctpAssocCb    assocCb[MAX_ASSOC_SUPPORTED];
+}SctpGlobalCb;
+
+SctpGlobalCb sctpCb;
+
 
 uint8_t sctpActvInit(Ent entity, Inst inst, Region region, Reason reason);
 uint8_t sctpActvTsk(Pst *pst, Buffer *mBuf);
 void sctpAssocReq();
+
+/*For du is socket server*/
+//uint8_t sctpStartReq();
+
 void sendToDuApp(Buffer *mBuf, Event event);
 uint8_t sctpSend(Buffer *mBuf, uint8_t itfType);
 uint8_t duSctpCfgReq(SctpParams sctpCfg);
