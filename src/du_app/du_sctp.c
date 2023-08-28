@@ -246,6 +246,14 @@ uint8_t duSctpCfgReq(SctpParams sctpCfg)
 
 /* Set polling to FALSE */
    pollingState = FALSE;  
+//Fill sctp control block
+/***
+View l2-04d3fab\src\cu_stub\cu_stub_sctp.c > sctpCfgReq()
+
+
+*/
+
+
 
 /* Fill Cfm Status */
    cfm.status = LCM_PRIM_OK;
