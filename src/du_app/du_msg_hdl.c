@@ -1392,7 +1392,11 @@ uint8_t duLayerConfigComplete()
    } */
 
    /*If Du high be SCTP server and Start DU-SCTP to listen on incoming connection */
-   sctpStartReq()
+   /*P5 SCTP socket server*/
+   //sctpStartReq()
+   //SCTP socket server unit test
+   sctpservertest()
+
    return (ret); 
 } 
 

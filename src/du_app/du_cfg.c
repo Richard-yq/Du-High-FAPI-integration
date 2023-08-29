@@ -661,7 +661,7 @@ uint8_t readCfg()
    duCfgParam.egtpParams.maxTunnelId = MAX_TEID;
 
    duCfgParam.maxUe = 32; //TODO: Check
-
+   
    /* DU Info */
    duCfgParam.duId = DU_ID;
    DU_ALLOC(duCfgParam.duName, sizeof(DU_NAME));

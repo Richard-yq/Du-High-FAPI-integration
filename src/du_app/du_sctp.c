@@ -923,7 +923,7 @@ uint8_t sctpSend(Buffer *mBuf, uint8_t itfType)
 } /* End of sctpSend */
 
 
-// Du be server
+// Du be server ()
 uint8_t sctpStartReq()
 {
    uint8_t assocIdx  = 0;
@@ -933,6 +933,57 @@ uint8_t sctpStartReq()
 
    if(sctpCb.numAssoc)
    { /*If we choose OSC DU High as the socket server, we will refer to the code here to create a p5 SCTP port.*/
+/*Server*/
+      if((ret = cmInetSocket(socket_type, &sctpCb.p5LstnSockFd, IPPROTO_SCTP) != ROK))
+      {/*socket*/
+         DU_LOG("\nERROR  -->  SCTP : Socket[%d] coudnt open for listening", sctpCb.p5LstnSockFd.fd);
+      } 
+      else if((ret = cmInetSctpBindx(&sctpCb.p5LstnSockFd, &sctpCb.localAddrLst, 62324)) != ROK)
+      {/*bind*/
+         DU_LOG("\nERROR  -->  SCTP: Binding failed at DU");
+      }
+      else if(ret = cmInetListen(&sctpCb.p5LstnSockFd, 1) != ROK)
+      {/*listen*/
+         DU_LOG("\nERROR  -->  SCTP: Unable to accept the connection");
+         DU_LOG("\nERROR  -->  SCTP : Listening on socket failed");
+         cmInetClose(&sctpCb.p5LstnSockFd);
+         return RFAILED;
+      }
+      else
+      {
+         for(assocIdx=0; assocIdx < sctpCb.numAssoc; assocIdx++)
+         {
+            if((ret = sctpAccept(&sctpCb.assocCb[assocIdx])) != ROK)
+            {/*accept*/
+               DU_LOG("\nERROR  -->  SCTP: Unable to accept the connection at DU");
+            }
+         }
+      }
+   }
+
+   if(ret == ROK)
+   {
+      if(sctpSockPoll() != ROK)
+      {
+         DU_LOG("\nERROR  -->  SCTP: Polling failed to start at DU");
+      }
+   }
+   return (ret);
+}
+
+// Du be server (for unit test)
+uint8_t sctpservertest()
+{
+   uint8_t assocIdx  = 0;
+   uint8_t ret = ROK;
+
+   socket_type = CM_INET_STREAM;
+
+   uint8_t sctp_test_unit =1;
+  
+
+   if(sctp_test_unit)
+   { /*This is unit test for choose OSC DU High as the socket server*/
 /*Server*/
       if((ret = cmInetSocket(socket_type, &sctpCb.p5LstnSockFd, IPPROTO_SCTP) != ROK))
       {/*socket*/
@@ -970,7 +1021,6 @@ uint8_t sctpStartReq()
    }
    return (ret);
 }
-
 
 
 
