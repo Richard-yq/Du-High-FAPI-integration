@@ -1369,6 +1369,9 @@ uint8_t duLayerConfigComplete()
 
    DU_LOG("\nINFO   -->  DU_APP : Configuring all Layer is complete");
       /*Finish SCTP params assign。*/
+
+   duP5SctpCfgReq();
+
    if((ret = duSctpCfgReq(duCfgParam.sctpParams)) != ROK)
    {
       DU_LOG("\nERROR  -->  DU_APP : Failed configuring Sctp Params");

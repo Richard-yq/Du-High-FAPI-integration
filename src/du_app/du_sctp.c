@@ -255,8 +255,6 @@ View l2-04d3fab\src\cu_stub\cu_stub_sctp.c > sctpCfgReq()
 
 */
 
-
-
 /* Fill Cfm Status */
    cfm.status = LCM_PRIM_OK;
    cfm.reason = LCM_REASON_NOT_APPL;
@@ -1022,9 +1020,38 @@ uint8_t sctpservertest()
    return (ret);
 }
 
+/**************************************************************************
+ * @brief Function to configure the Sctp Params during config Request
+ *
+ * @details
+ *
+ *      Function : duP5SctpCfgReq
+ * 
+ *      Functionality:
+ *           This function configures SCTP socket server Params during the 
+ *           config Request
+ *     
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ ***************************************************************************/
+uint8_t duP5SctpCfgReq()
+{
+   int destIdx = 0, assocIdx = 0;
 
+   sctpCb.sctpCfg = duCfgParams.sctpserverParams;   
+   fillAddrLst(&sctpCb.localAddrLst, &sctpCb.sctpCfg.localIpAddr);
+   memset(&sctpCb.p5LstnSockFd, -1, sizeof(CmInetFd));
 
+   sctpCb.assocCb[0].destPort = sctpCb.sctpCfg.destCb.destPort;
+   sctpCb.assocCb[0].bReadFdSet = ROK;
+   memset(&sctpCb[0].assocCb[0].sockFd, -1, sizeof(CmInetFd));
+   fillDestNetAddr(&sctpCb.assocCb[0].destIpNetAddr, &sctpCb.sctpCfg.destCb[0].destIpAddr);
+   sctpCb.assocCb[0].connUp = false;
 
+   sctpCb.numAssoc = 1;
+   return ROK;
+}
 
 /**********************************************************************
          End of file
