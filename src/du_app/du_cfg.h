@@ -1257,6 +1257,7 @@ typedef struct sib1Params
 typedef struct duCfgParams
 {
    SctpParams         sctpParams;                  /* SCTP Params */
+   P5SctpParams       sctpserverParams;            /* SCTP server Params */
    F1EgtpParams       egtpParams;                  /* EGTP Params */
    uint32_t           maxUe;
    uint32_t           duId;

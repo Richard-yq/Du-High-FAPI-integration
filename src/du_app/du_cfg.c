@@ -1085,8 +1085,9 @@ uint8_t duReadCfg()
       DU_LOG("\nERROR  -->  DU_APP : Reading configuration failed");
       return RFAILED;
    }
-   //Read configs into dup5Cb
-   /**/
+   //Read configs into duCfgParams
+   /*This function read du_cfg.h config into duCfgParam for establishing
+      SCTP socket server*/
    readDUCfg();
 
    //Fill pst structure
@@ -1145,7 +1146,7 @@ uint8_t duReadCfg()
  *    Function : readduCfg
  *
  *    Functionality:
- *            - Read DU related configuration to estabilsh sctp socket
+ *            - Read DU related configuration to establish sctp 
  *              socket server.
  * @params[in] 
  * @return ROK     - success
@@ -1171,11 +1172,11 @@ void readDUCfg()
    }
 
    cmInetAddr((S8*)g_cfg.DU_IPV4_Addr,  &ipv4_du);
-   cmInetAddr((S8*)g_cfg.du_IPV4_Addr, &ipv4_du);
+   cmInetAddr((S8*)g_cfg.l1_IPV4_Addr, &ipv4_p5);
    
-   duCfgParams.sctpParams.destCb[0].destIpAddr.ipV4Addr = ipv4_du;
+   duCfgParams.sctpParams.destCb[0].destIpAddr.ipV4Addr = ipv4_p5;
    duCfgParams.sctpParams.destCb[0].destIpAddr.ipV6Pres = false;
-   duCfgParams.sctpParams.destCb[0].destPort = g_cfg.du_Port;
+   duCfgParams.sctpParams.destCb[0].destPort = g_cfg.p5_Port;
 
    duCfgParams.sctpParams.localIpAddr.ipV4Addr = ipv4_du;
    duCfgParams.sctpParams.localIpAddr.ipV6Pres = false;
@@ -1187,30 +1188,21 @@ void readDUCfg()
    /* du IP Address and Port*/
    memset(&ipv4_du, 0, sizeof(uint32_t));
    cmInetAddr((S8*)DU_IP_V4_ADDR, &ipv4_du);
-   duCfgParams.sctpParams.localIpAddr.ipV4Addr = ipv4_du;
-   duCfgParams.sctpParams.localIpAddr.ipV6Pres = false;
-   duCfgParams.sctpParams.p5SctpPort = p5_SCTP_PORT;
+   duCfgParams.sctpserverParams.localIpAddr.ipV4Addr = ipv4_du;
+   duCfgParams.sctpserverParams.localIpAddr.ipV6Pres = false;
+   duCfgParams.sctpserverParams.p5SctpPort = p5_SCTP_PORT;
 
-   duCfgParams.sctpParams.numDestNode = 0;
+   duCfgParams.sctpserverParams.numDestNode = 0;
 
    /* OAI L1 p5 IP Address and Port*/
    memset(&ipv4_p5, 0, sizeof(uint32_t));
    cmInetAddr((S8*)p5_IP_V4_ADDR, &ipv4_p5);
-   duCfgParams.sctpParams.destCb.destIpAddr.ipV4Addr = ipv4_p5;
-   duCfgParams.sctpParams.destCb.destIpAddr.ipV6Pres = false;
-   duCfgParams.sctpParams.destCb.destPort = p5_SCTP_PORT;
+   duCfgParams.sctpserverParams.destCb.destIpAddr.ipV4Addr = ipv4_p5;
+   duCfgParams.sctpserverParams.destCb.destIpAddr.ipV6Pres = false;
+   duCfgParams.sctpserverParams.destCb.destPort = p5_SCTP_PORT;
 
-   }   
+}   
 #endif
-
-   /*PLMN*/
-   duCfgParams.plmn.mcc[0] = PLMN_MCC0;
-   duCfgParams.plmn.mcc[1] = PLMN_MCC1;
-   duCfgParams.plmn.mcc[2] = PLMN_MCC2;
-   duCfgParams.plmn.mnc[0] = PLMN_MNC0;
-   duCfgParams.plmn.mnc[1] = PLMN_MNC1;
-   duCfgParams.plmn.mnc[2] = PLMN_MNC2;
-  
 } /* End of readCuCfg */
 
 
