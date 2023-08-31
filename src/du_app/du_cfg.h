@@ -31,11 +31,15 @@
 #define DU_IP_V4_ADDR "192.168.130.81"
 #define CU_IP_V4_ADDR "192.168.130.82"
 #define RIC_IP_V4_ADDR "192.168.130.80"
+/*Add p5 ip address this is for unit test*/
+#define p5_IP_V4_ADDR "127.0.0.1"
 /*Add p5 ip address*/
 // #define p5_IP_V4_ADDR "xxx.xxx.xxx.xxx"
 
 #define F1_SCTP_PORT 38472  /* As per the spec 38.472, the registered port number for F1AP is 38472 */
 #define E2_SCTP_PORT 36421
+/*Add p5 sctp port this is for unit test*/
+#define p5_SCTP_PORT 62324
 /*Add p5 sctp port*/
 // #define p5_SCTP_PORT xxxxx
 #endif
@@ -1253,6 +1257,7 @@ typedef struct sib1Params
 typedef struct duCfgParams
 {
    SctpParams         sctpParams;                  /* SCTP Params */
+   P5SctpParams       sctpserverParams;            /* SCTP server Params */
    F1EgtpParams       egtpParams;                  /* EGTP Params */
    uint32_t           maxUe;
    uint32_t           duId;
@@ -1315,6 +1320,9 @@ uint8_t readCfg();
 uint8_t duReadCfg(); 
 uint16_t calcSliv(uint8_t startSymbol, uint8_t lengthSymbol);
 uint8_t cpyRrmPolicyInDuCfgParams(RrmPolicyList rrmPolicy[], uint8_t policyNum, MacSliceCfgReq *tempSliceCfg);
+
+/*For du is socket server*/
+void readDUCfg();
 
 #endif /* __DU_CONFIG_H__ */
 

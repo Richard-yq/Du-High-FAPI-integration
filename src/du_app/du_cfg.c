@@ -661,7 +661,7 @@ uint8_t readCfg()
    duCfgParam.egtpParams.maxTunnelId = MAX_TEID;
 
    duCfgParam.maxUe = 32; //TODO: Check
-
+   
    /* DU Info */
    duCfgParam.duId = DU_ID;
    DU_ALLOC(duCfgParam.duName, sizeof(DU_NAME));
@@ -1085,6 +1085,10 @@ uint8_t duReadCfg()
       DU_LOG("\nERROR  -->  DU_APP : Reading configuration failed");
       return RFAILED;
    }
+   //Read configs into duCfgParams
+   /*This function read du_cfg.h config into duCfgParam for establishing
+      SCTP socket server*/
+   readDUCfg();
 
    //Fill pst structure
    memset(&(pst), 0, sizeof(Pst));
@@ -1132,6 +1136,76 @@ uint8_t duReadCfg()
 
    return ROK;
 }
+
+/*******************************************************************
+ *
+ * @brief Read DU related configuration
+ *
+ * @details
+ *
+ *    Function : readduCfg
+ *
+ *    Functionality:
+ *            - Read DU related configuration to establish sctp 
+ *              socket server.
+ * @params[in] 
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ * ****************************************************************/
+
+void readDUCfg()
+{
+   uint8_t *numDu;
+   uint32_t ipv4_du, ipv4_p5;
+   /*要增加宣告變數*/
+
+   DU_LOG("\nINFO  --> du : Reading du configurations");
+
+   duCfgParam.duId = DU_ID;
+   strcpy(duCfgParam.duName, DU_NAME);
+#ifdef O1_ENABLE
+   if( getStartupConfigForStub(&g_cfg) != ROK )
+   {
+      DU_LOG("\nError  -->  du : Could not fetch startup "\
+             "configurations from Netconf interface\n");
+      exit(1);
+   }
+
+   cmInetAddr((S8*)g_cfg.DU_IPV4_Addr,  &ipv4_du);
+   cmInetAddr((S8*)g_cfg.l1_IPV4_Addr, &ipv4_p5);
+   
+   duCfgParams.sctpParams.destCb[0].destIpAddr.ipV4Addr = ipv4_p5;
+   duCfgParams.sctpParams.destCb[0].destIpAddr.ipV6Pres = false;
+   duCfgParams.sctpParams.destCb[0].destPort = g_cfg.p5_Port;
+
+   duCfgParams.sctpParams.localIpAddr.ipV4Addr = ipv4_du;
+   duCfgParams.sctpParams.localIpAddr.ipV6Pres = false;
+   duCfgParams.sctpParams.e2SctpPort = g_cfg.du_Port;
+
+   duCfgParams.sctpParams.numDestNode = 1;
+
+#else
+   /* du IP Address and Port*/
+   memset(&ipv4_du, 0, sizeof(uint32_t));
+   cmInetAddr((S8*)DU_IP_V4_ADDR, &ipv4_du);
+   duCfgParam.sctpserverParams.localIpAddr.ipV4Addr = ipv4_du;
+   duCfgParam.sctpserverParams.localIpAddr.ipV6Pres = false;
+   duCfgParam.sctpserverParams.p5SctpPort = p5_SCTP_PORT;
+
+   duCfgParam.sctpserverParams.numDestNode = 0;
+
+   /* OAI L1 p5 IP Address and Port*/
+   memset(&ipv4_p5, 0, sizeof(uint32_t));
+   cmInetAddr((S8*)p5_IP_V4_ADDR, &ipv4_p5);
+   duCfgParam.sctpserverParams.destCb[0].destIpAddr.ipV4Addr = ipv4_p5;
+   duCfgParam.sctpserverParams.destCb[0].destIpAddr.ipV6Pres = false;
+   duCfgParam.sctpserverParams.destCb[0].destPort = p5_SCTP_PORT;
+
+}   
+#endif
+} /* End of readCuCfg */
+
 
 /**********************************************************************
   End of file

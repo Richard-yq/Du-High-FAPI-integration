@@ -255,8 +255,6 @@ View l2-04d3fab\src\cu_stub\cu_stub_sctp.c > sctpCfgReq()
 
 */
 
-
-
 /* Fill Cfm Status */
    cfm.status = LCM_PRIM_OK;
    cfm.reason = LCM_REASON_NOT_APPL;
@@ -923,7 +921,7 @@ uint8_t sctpSend(Buffer *mBuf, uint8_t itfType)
 } /* End of sctpSend */
 
 
-// Du be server
+// Du be server ()
 uint8_t sctpStartReq()
 {
    uint8_t assocIdx  = 0;
@@ -933,6 +931,57 @@ uint8_t sctpStartReq()
 
    if(sctpCb.numAssoc)
    { /*If we choose OSC DU High as the socket server, we will refer to the code here to create a p5 SCTP port.*/
+/*Server*/
+      if((ret = cmInetSocket(socket_type, &sctpCb.p5LstnSockFd, IPPROTO_SCTP) != ROK))
+      {/*socket*/
+         DU_LOG("\nERROR  -->  SCTP : Socket[%d] coudnt open for listening", sctpCb.p5LstnSockFd.fd);
+      } 
+      else if((ret = cmInetSctpBindx(&sctpCb.p5LstnSockFd, &sctpCb.localAddrLst, 62324)) != ROK)
+      {/*bind*/
+         DU_LOG("\nERROR  -->  SCTP: Binding failed at DU");
+      }
+      else if(ret = cmInetListen(&sctpCb.p5LstnSockFd, 1) != ROK)
+      {/*listen*/
+         DU_LOG("\nERROR  -->  SCTP: Unable to accept the connection");
+         DU_LOG("\nERROR  -->  SCTP : Listening on socket failed");
+         cmInetClose(&sctpCb.p5LstnSockFd);
+         return RFAILED;
+      }
+      else
+      {
+         for(assocIdx=0; assocIdx < sctpCb.numAssoc; assocIdx++)
+         {
+            if((ret = sctpAccept(&sctpCb.assocCb[assocIdx])) != ROK)
+            {/*accept*/
+               DU_LOG("\nERROR  -->  SCTP: Unable to accept the connection at DU");
+            }
+         }
+      }
+   }
+
+   if(ret == ROK)
+   {
+      if(sctpSockPoll() != ROK)
+      {
+         DU_LOG("\nERROR  -->  SCTP: Polling failed to start at DU");
+      }
+   }
+   return (ret);
+}
+
+// Du be server (for unit test)
+uint8_t sctpservertest()
+{
+   uint8_t assocIdx  = 0;
+   uint8_t ret = ROK;
+
+   socket_type = CM_INET_STREAM;
+
+   uint8_t sctp_test_unit =1;
+  
+
+   if(sctp_test_unit)
+   { /*This is unit test for choose OSC DU High as the socket server*/
 /*Server*/
       if((ret = cmInetSocket(socket_type, &sctpCb.p5LstnSockFd, IPPROTO_SCTP) != ROK))
       {/*socket*/
@@ -971,10 +1020,38 @@ uint8_t sctpStartReq()
    return (ret);
 }
 
+/**************************************************************************
+ * @brief Function to configure the Sctp Params during config Request
+ *
+ * @details
+ *
+ *      Function : duP5SctpCfgReq
+ * 
+ *      Functionality:
+ *           This function configures SCTP socket server Params during the 
+ *           config Request
+ *     
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ ***************************************************************************/
+uint8_t duP5SctpCfgReq()
+{
+   int destIdx = 0, assocIdx = 0;
 
+   sctpCb.sctpCfg = duCfgParams.sctpserverParams;   
+   fillAddrLst(&sctpCb.localAddrLst, &sctpCb.sctpCfg.localIpAddr);
+   memset(&sctpCb.p5LstnSockFd, -1, sizeof(CmInetFd));
 
+   sctpCb.assocCb[0].destPort = sctpCb.sctpCfg.destCb[0].destPort;
+   sctpCb.assocCb[0].bReadFdSet = ROK;
+   memset(&sctpCb[0].assocCb[0].sockFd, -1, sizeof(CmInetFd));
+   fillDestNetAddr(&sctpCb.assocCb[0].destIpNetAddr, &sctpCb.sctpCfg.destCb[0].destIpAddr);
+   sctpCb.assocCb[0].connUp = false;
 
-
+   sctpCb.numAssoc = 1;
+   return ROK;
+}
 
 /**********************************************************************
          End of file

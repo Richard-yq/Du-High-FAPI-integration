@@ -27,10 +27,11 @@
 #define MAX_RETRY 5
 /*-----*/
 /*For du is socket server */
-//#define MAX_IPV6_LEN 16
-//#define MAX_L1_SUPPORTED 2
-//#define MAX_REMOTE_DU_SUPPORTED 1
-//#define MAX_ASSOC_SUPPORTED (MAX_L1_SUPPORTED + MAX_REMOTE_DU_SUPPORTED)
+#define MAX_IPV6_LEN 16
+#define MAX_L1_SUPPORTED 2
+#define MAX_REMOTE_DU_SUPPORTED 1
+#define MAX_ASSOC_SUPPORTED (MAX_L1_SUPPORTED + MAX_REMOTE_DU_SUPPORTED)
+#define MAX_DU_SUPPORTED 1
 
 /* Global variable declaration */
 uint8_t   socket_type;      /* Socket type */
@@ -86,6 +87,7 @@ typedef struct
 /* Global variable declaration */
 DuSctpDestCb f1Params;     /* SCTP configurations at DU */ 
 DuSctpDestCb ricParams;    /* SCTP configurations at DU */ 
+DuSctpDestCb p5Params;    /* SCTP configurations at DU */ 
 
 /*-------------------------------------------*/
 /*Add sctpcb for du is socket server*/
@@ -128,14 +130,14 @@ typedef struct sctpCfgPerIntf
 typedef struct p5SctpParams
 {
    SctpIpAddr     localIpAddr;
-   SctpCfgPerIntf f1SctpInfo;
-   SctpCfgPerIntf xnSctpInfo;
-   SctpCfgPerIntf p5SctpInfo;
-}p5SctpParams;
+   uint16_t       p5SctpPort;
+   uint8_t        numDestNode;
+   SctpDestInfo   destCb[MAX_DU_SUPPORTED];
+}P5SctpParams;
 
 typedef struct
 {
-   p5SctpParams     sctpCfg;
+   P5SctpParams     sctpCfg;
    CmInetNetAddrLst localAddrLst;
    CmInetFd         f1LstnSockFd;       /* Listening Socket file descriptor for F1 association */
    CmInetFd         xnLstnSockFd;       /* Listening Socket file descriptor for Xn association */
@@ -166,7 +168,8 @@ uint8_t duFillSctpPst(Pst *pst, Event event);
 uint8_t sctpSetSockOpts(CmInetFd *sock_Fd);
 uint8_t processPolling(sctpSockPollParams *pollParams, CmInetFd *sockFd, uint32_t *timeoutPtr, CmInetMemInfo *memInfo, bool recvMsgSet);
 uint8_t sctpSockPoll();
-
+/*For du is socket server*/
+uint8_t duP5SctpCfgReq();
 #endif
 
 /**********************************************************************
