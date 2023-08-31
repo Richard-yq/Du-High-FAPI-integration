@@ -1321,6 +1321,9 @@ uint8_t duReadCfg();
 uint16_t calcSliv(uint8_t startSymbol, uint8_t lengthSymbol);
 uint8_t cpyRrmPolicyInDuCfgParams(RrmPolicyList rrmPolicy[], uint8_t policyNum, MacSliceCfgReq *tempSliceCfg);
 
+/*For du is socket server*/
+void readDUCfg();
+
 #endif /* __DU_CONFIG_H__ */
 
 /**********************************************************************
