@@ -1043,7 +1043,7 @@ uint8_t duP5SctpCfgReq()
    fillAddrLst(&sctpCb.localAddrLst, &sctpCb.sctpCfg.localIpAddr);
    memset(&sctpCb.p5LstnSockFd, -1, sizeof(CmInetFd));
 
-   sctpCb.assocCb[0].destPort = sctpCb.sctpCfg.destCb.destPort;
+   sctpCb.assocCb[0].destPort = sctpCb.sctpCfg.destCb[0].destPort;
    sctpCb.assocCb[0].bReadFdSet = ROK;
    memset(&sctpCb[0].assocCb[0].sockFd, -1, sizeof(CmInetFd));
    fillDestNetAddr(&sctpCb.assocCb[0].destIpNetAddr, &sctpCb.sctpCfg.destCb[0].destIpAddr);

@@ -1158,11 +1158,12 @@ void readDUCfg()
 {
    uint8_t *numDu;
    uint32_t ipv4_du, ipv4_p5;
+   /*要增加宣告變數*/
 
    DU_LOG("\nINFO  --> du : Reading du configurations");
 
-   duCfgParams.duId = DU_ID;
-   strcpy(duCfgParams.duName, DU_NAME);
+   duCfgParam.duId = DU_ID;
+   strcpy(duCfgParam.duName, DU_NAME);
 #ifdef O1_ENABLE
    if( getStartupConfigForStub(&g_cfg) != ROK )
    {
@@ -1188,18 +1189,18 @@ void readDUCfg()
    /* du IP Address and Port*/
    memset(&ipv4_du, 0, sizeof(uint32_t));
    cmInetAddr((S8*)DU_IP_V4_ADDR, &ipv4_du);
-   duCfgParams.sctpserverParams.localIpAddr.ipV4Addr = ipv4_du;
-   duCfgParams.sctpserverParams.localIpAddr.ipV6Pres = false;
-   duCfgParams.sctpserverParams.p5SctpPort = p5_SCTP_PORT;
+   duCfgParam.sctpserverParams.localIpAddr.ipV4Addr = ipv4_du;
+   duCfgParam.sctpserverParams.localIpAddr.ipV6Pres = false;
+   duCfgParam.sctpserverParams.p5SctpPort = p5_SCTP_PORT;
 
-   duCfgParams.sctpserverParams.numDestNode = 0;
+   duCfgParam.sctpserverParams.numDestNode = 0;
 
    /* OAI L1 p5 IP Address and Port*/
    memset(&ipv4_p5, 0, sizeof(uint32_t));
    cmInetAddr((S8*)p5_IP_V4_ADDR, &ipv4_p5);
-   duCfgParams.sctpserverParams.destCb.destIpAddr.ipV4Addr = ipv4_p5;
-   duCfgParams.sctpserverParams.destCb.destIpAddr.ipV6Pres = false;
-   duCfgParams.sctpserverParams.destCb.destPort = p5_SCTP_PORT;
+   duCfgParam.sctpserverParams.destCb[0].destIpAddr.ipV4Addr = ipv4_p5;
+   duCfgParam.sctpserverParams.destCb[0].destIpAddr.ipV6Pres = false;
+   duCfgParam.sctpserverParams.destCb[0].destPort = p5_SCTP_PORT;
 
 }   
 #endif

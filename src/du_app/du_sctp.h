@@ -137,7 +137,7 @@ typedef struct p5SctpParams
 
 typedef struct
 {
-   p5SctpParams     sctpCfg;
+   P5SctpParams     sctpCfg;
    CmInetNetAddrLst localAddrLst;
    CmInetFd         f1LstnSockFd;       /* Listening Socket file descriptor for F1 association */
    CmInetFd         xnLstnSockFd;       /* Listening Socket file descriptor for Xn association */
@@ -169,7 +169,7 @@ uint8_t sctpSetSockOpts(CmInetFd *sock_Fd);
 uint8_t processPolling(sctpSockPollParams *pollParams, CmInetFd *sockFd, uint32_t *timeoutPtr, CmInetMemInfo *memInfo, bool recvMsgSet);
 uint8_t sctpSockPoll();
 /*For du is socket server*/
-uint8_t duP5SctpCfgReq(());
+uint8_t duP5SctpCfgReq();
 #endif
 
 /**********************************************************************
