@@ -56,6 +56,8 @@
 #include "BWP-UplinkCommon.h"
 #include "TDD-UL-DL-ConfigCommon.h"
 #include "du_sys_info_hdl.h"
+/*Include du_sctp.h because we define define struct there*/
+#include "du_sctp.h"
 
 #ifdef O1_ENABLE
 #include "CmInterface.h"
