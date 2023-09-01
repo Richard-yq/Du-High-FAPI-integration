@@ -26,6 +26,8 @@
 #include "du_app_mac_inf.h"
 #include "du_app_rlc_inf.h"
 #include "du_e2ap_mgr.h"
+/*Include du_sctp.h because we define define struct there*/
+#include "du_sctp.h"
 #include "du_cfg.h"
 #include "du_mgr.h"
 #include "du_utils.h"
@@ -56,8 +58,7 @@
 #include "BWP-UplinkCommon.h"
 #include "TDD-UL-DL-ConfigCommon.h"
 #include "du_sys_info_hdl.h"
-/*Include du_sctp.h because we define define struct there*/
-#include "du_sctp.h"
+
 
 #ifdef O1_ENABLE
 #include "CmInterface.h"

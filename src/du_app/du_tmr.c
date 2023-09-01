@@ -24,6 +24,8 @@
 #include "du_tmr.h"
 #include "du_app_rlc_inf.h"
 #include "du_app_mac_inf.h"
+/*Include du_sctp.h because we define define struct there*/
+#include "du_sctp.h"
 #include "du_cfg.h"
 #include "du_e2ap_mgr.h"
 #include "du_mgr.h"
