@@ -1042,7 +1042,7 @@ uint8_t duP5SctpCfgReq()
 {
    int destIdx = 0, assocIdx = 0;
 
-   sctpCb.sctpCfg = duCfgParams.sctpserverParams;   
+   sctpCb.sctpCfg = duCfgParam.sctpserverParams;   
    fillAddrLst(&sctpCb.localAddrLst, &sctpCb.sctpCfg.localIpAddr);
    memset(&sctpCb.p5LstnSockFd, -1, sizeof(CmInetFd));
 

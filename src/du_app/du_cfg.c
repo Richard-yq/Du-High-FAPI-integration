@@ -1177,15 +1177,15 @@ void readDUCfg()
    cmInetAddr((S8*)g_cfg.DU_IPV4_Addr,  &ipv4_du);
    cmInetAddr((S8*)g_cfg.l1_IPV4_Addr, &ipv4_p5);
    
-   duCfgParams.sctpParams.destCb[0].destIpAddr.ipV4Addr = ipv4_p5;
-   duCfgParams.sctpParams.destCb[0].destIpAddr.ipV6Pres = false;
-   duCfgParams.sctpParams.destCb[0].destPort = g_cfg.p5_Port;
+   duCfgParam.sctpParams.destCb[0].destIpAddr.ipV4Addr = ipv4_p5;
+   duCfgParam.sctpParams.destCb[0].destIpAddr.ipV6Pres = false;
+   duCfgParam.sctpParams.destCb[0].destPort = g_cfg.p5_Port;
 
-   duCfgParams.sctpParams.localIpAddr.ipV4Addr = ipv4_du;
-   duCfgParams.sctpParams.localIpAddr.ipV6Pres = false;
-   duCfgParams.sctpParams.e2SctpPort = g_cfg.du_Port;
+   duCfgParam.sctpParams.localIpAddr.ipV4Addr = ipv4_du;
+   duCfgParam.sctpParams.localIpAddr.ipV6Pres = false;
+   duCfgParam.sctpParams.e2SctpPort = g_cfg.du_Port;
 
-   duCfgParams.sctpParams.numDestNode = 1;
+   duCfgParam.sctpParams.numDestNode = 1;
 
 #else
    /* du IP Address and Port*/
