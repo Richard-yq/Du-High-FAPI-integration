@@ -94,7 +94,7 @@ DuSctpDestCb p5Params;    /* SCTP configurations at DU */
 
 typedef struct
 {
-   InterfaceType    intf;             /* FAPI Interface */
+   //InterfaceType    intf;             /* FAPI Interface */
    uint32_t         destId;           /* For F1 interface, this is DU ID. For Xn, this is remote CU ID For p5 interface, this is L1 ID*/
    uint16_t         destPort;         /* p5 PORTS */
    Bool             bReadFdSet;
@@ -122,7 +122,7 @@ typedef struct sctpDestInfo
 typedef struct sctpCfgPerIntf
 {
    uint16_t       port;
-   NodeType       localNodeType; /* Local node acts as Server or client while establishing SCTP assoc */
+   //NodeType       localNodeType; /* Local node acts as Server or client while establishing SCTP assoc */
    uint8_t        numDestNode; 
    SctpDestInfo   destCb[MAX_ASSOC_SUPPORTED];
 }SctpCfgPerIntf;
@@ -142,7 +142,7 @@ typedef struct
    CmInetFd         f1LstnSockFd;       /* Listening Socket file descriptor for F1 association */
    CmInetFd         xnLstnSockFd;       /* Listening Socket file descriptor for Xn association */
    CmInetFd         p5LstnSockFd;       /* Listening Socket file descriptor for p5 association */
-   NodeType         localXnNodeType;    /* Local node acts as Server or client while establishing SCTP assoc at Xn interface */
+   //NodeType       localXnNodeType;    /* Local node acts as Server or client while establishing SCTP assoc at Xn interface */
    uint8_t          numAssoc;
    p5SctpAssocCb    assocCb[MAX_ASSOC_SUPPORTED];
 }SctpGlobalCb;

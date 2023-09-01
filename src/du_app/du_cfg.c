@@ -1158,7 +1158,6 @@ void readDUCfg()
 {
    uint8_t *numDu;
    uint32_t ipv4_du, ipv4_p5;
-   /*要增加宣告變數*/
 
    DU_LOG("\nINFO  --> du : Reading du configurations");
 

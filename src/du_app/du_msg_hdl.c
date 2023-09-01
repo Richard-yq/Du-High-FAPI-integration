@@ -1398,7 +1398,7 @@ uint8_t duLayerConfigComplete()
    /*P5 SCTP socket server*/
    //sctpStartReq()
    //SCTP socket server unit test
-   sctpservertest()
+   sctpservertest();
 
    return (ret); 
 } 
