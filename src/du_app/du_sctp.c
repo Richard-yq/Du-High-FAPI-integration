@@ -29,8 +29,7 @@
 #include "cm_inet.x"
 #include "du_app_mac_inf.h"
 #include "du_e2ap_mgr.h"
-/*Include du_sctp.h because we define define struct there*/
-#include "du_sctp.h"
+/*Include du_sctp.h because we define struct there*/
 #include "du_cfg.h"
 #include "du_sctp.h"
 #include "lsctp.h"
@@ -925,6 +924,7 @@ uint8_t sctpSend(Buffer *mBuf, uint8_t itfType)
 
 
 // Du be server ()
+/*
 uint8_t sctpStartReq()
 {
    uint8_t assocIdx  = 0;
@@ -933,18 +933,18 @@ uint8_t sctpStartReq()
    socket_type = CM_INET_STREAM;
 
    if(sctpCb.numAssoc)
-   { /*If we choose OSC DU High as the socket server, we will refer to the code here to create a p5 SCTP port.*/
-/*Server*/
+   { //If we choose OSC DU High as the socket server, we will refer to the code here to create a p5 SCTP port.*/
+/*Server
       if((ret = cmInetSocket(socket_type, &sctpCb.p5LstnSockFd, IPPROTO_SCTP) != ROK))
-      {/*socket*/
+      {//socket
          DU_LOG("\nERROR  -->  SCTP : Socket[%d] coudnt open for listening", sctpCb.p5LstnSockFd.fd);
       } 
       else if((ret = cmInetSctpBindx(&sctpCb.p5LstnSockFd, &sctpCb.localAddrLst, 62324)) != ROK)
-      {/*bind*/
+      {//bind
          DU_LOG("\nERROR  -->  SCTP: Binding failed at DU");
       }
       else if(ret = cmInetListen(&sctpCb.p5LstnSockFd, 1) != ROK)
-      {/*listen*/
+      {//listen
          DU_LOG("\nERROR  -->  SCTP: Unable to accept the connection");
          DU_LOG("\nERROR  -->  SCTP : Listening on socket failed");
          cmInetClose(&sctpCb.p5LstnSockFd);
@@ -955,7 +955,7 @@ uint8_t sctpStartReq()
          for(assocIdx=0; assocIdx < sctpCb.numAssoc; assocIdx++)
          {
             if((ret = sctpAccept(&sctpCb.assocCb[assocIdx])) != ROK)
-            {/*accept*/
+            {//accept
                DU_LOG("\nERROR  -->  SCTP: Unable to accept the connection at DU");
             }
          }
@@ -971,8 +971,10 @@ uint8_t sctpStartReq()
    }
    return (ret);
 }
+*/
 
 // Du be server (for unit test)
+/*
 uint8_t sctpservertest()
 {
    uint8_t assocIdx  = 0;
@@ -984,18 +986,18 @@ uint8_t sctpservertest()
   
 
    if(sctp_test_unit)
-   { /*This is unit test for choose OSC DU High as the socket server*/
-/*Server*/
+   { //This is unit test for choose OSC DU High as the socket server
+//Server
       if((ret = cmInetSocket(socket_type, &sctpCb.p5LstnSockFd, IPPROTO_SCTP) != ROK))
-      {/*socket*/
+      {//socket
          DU_LOG("\nERROR  -->  SCTP : Socket[%d] coudnt open for listening", sctpCb.p5LstnSockFd.fd);
       } 
       else if((ret = cmInetSctpBindx(&sctpCb.p5LstnSockFd, &sctpCb.localAddrLst, sctpCb.sctpCfg.p5SctpInfo.Port)) != ROK)
-      {/*bind*/
+      {//bind
          DU_LOG("\nERROR  -->  SCTP: Binding failed at DU");
       }
       else if(ret = cmInetListen(&sctpCb.p5LstnSockFd, 1) != ROK)
-      {/*listen*/
+      {//listen
          DU_LOG("\nERROR  -->  SCTP: Unable to accept the connection");
          DU_LOG("\nERROR  -->  SCTP : Listening on socket failed");
          cmInetClose(&sctpCb.p5LstnSockFd);
@@ -1006,7 +1008,7 @@ uint8_t sctpservertest()
          for(assocIdx=0; assocIdx < sctpCb.numAssoc; assocIdx++)
          {
             if((ret = sctpAccept(&sctpCb.assocCb[assocIdx])) != ROK)
-            {/*accept*/
+            {//accept
                DU_LOG("\nERROR  -->  SCTP: Unable to accept the connection at DU");
             }
          }
@@ -1022,7 +1024,7 @@ uint8_t sctpservertest()
    }
    return (ret);
 }
-
+*/
 /**************************************************************************
  * @brief Function to configure the Sctp Params during config Request
  *
@@ -1048,7 +1050,7 @@ uint8_t duP5SctpCfgReq()
 
    sctpCb.assocCb[0].destPort = sctpCb.sctpCfg.destCb[0].destPort;
    sctpCb.assocCb[0].bReadFdSet = ROK;
-   memset(&sctpCb[0].assocCb[0].sockFd, -1, sizeof(CmInetFd));
+   memset(&sctpCb.assocCb[0].sockFd, -1, sizeof(CmInetFd));
    fillDestNetAddr(&sctpCb.assocCb[0].destIpNetAddr, &sctpCb.sctpCfg.destCb[0].destIpAddr);
    sctpCb.assocCb[0].connUp = false;
 

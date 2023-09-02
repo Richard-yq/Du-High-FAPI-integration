@@ -307,6 +307,14 @@
 #define DEDICATED_RATIO  10
 #define NUM_OF_SUPPORTED_SLICE  2
 
+/*-----*/
+/*For du is socket server */
+#define MAX_IPV6_LEN 16
+#define MAX_L1_SUPPORTED 2
+#define MAX_REMOTE_DU_SUPPORTED 1
+#define MAX_ASSOC_SUPPORTED (MAX_L1_SUPPORTED + MAX_REMOTE_DU_SUPPORTED)
+#define MAX_DU_SUPPORTED 1
+
 #ifdef NR_DRX
 /* Macros for Drx configuration */
 #define DRX_ONDURATION_TIMER_VALUE_PRESENT_IN_MS true
@@ -1253,6 +1261,50 @@ typedef struct sib1Params
    SiSchedInfo           siSchedInfo;
    SrvCellCfgCommSib     srvCellCfgCommSib;
 }Sib1Params;
+/*Add sctpcb for du is socket server*/
+
+typedef struct
+{
+   //InterfaceType    intf;             /* FAPI Interface */
+   uint32_t         destId;           /* For F1 interface, this is DU ID. For Xn, this is remote CU ID For p5 interface, this is L1 ID*/
+   uint16_t         destPort;         /* p5 PORTS */
+   Bool             bReadFdSet;
+   CmInetFd         sockFd;           /* Socket file descriptor */
+   CmInetAddr       peerAddr;
+   CmInetNetAddrLst destAddrLst;      /* Remote IP address list */
+   CmInetNetAddr    destIpNetAddr;    /* Remote IP network address */ 
+   Bool             connUp;           /* Is connection up */
+}p5SctpAssocCb;
+
+typedef struct ipAddr
+{
+ Bool      ipV4Pres;
+ uint32_t  ipV4Addr;
+ Bool      ipV6Pres;
+ uint8_t   ipV6Addr[MAX_IPV6_LEN];
+}SctpIpAddr;
+
+typedef struct sctpDestInfo
+{
+   SctpIpAddr  destIpAddr;
+   uint16_t    destPort;
+}SctpDestInfo;
+
+typedef struct sctpCfgPerIntf
+{
+   uint16_t       port;
+   //NodeType       localNodeType; /* Local node acts as Server or client while establishing SCTP assoc */
+   uint8_t        numDestNode; 
+   SctpDestInfo   destCb[MAX_ASSOC_SUPPORTED];
+}SctpCfgPerIntf;
+
+typedef struct p5SctpParams
+{
+   SctpIpAddr     localIpAddr;
+   uint16_t       p5SctpPort;
+   uint8_t        numDestNode;
+   SctpDestInfo   destCb[MAX_DU_SUPPORTED];
+}P5SctpParams;
 
 typedef struct duCfgParams
 {

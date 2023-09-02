@@ -91,50 +91,6 @@ DuSctpDestCb p5Params;    /* SCTP configurations at DU */
 
 /*-------------------------------------------*/
 /*Add sctpcb for du is socket server*/
-
-typedef struct
-{
-   //InterfaceType    intf;             /* FAPI Interface */
-   uint32_t         destId;           /* For F1 interface, this is DU ID. For Xn, this is remote CU ID For p5 interface, this is L1 ID*/
-   uint16_t         destPort;         /* p5 PORTS */
-   Bool             bReadFdSet;
-   CmInetFd         sockFd;           /* Socket file descriptor */
-   CmInetAddr       peerAddr;
-   CmInetNetAddrLst destAddrLst;      /* Remote IP address list */
-   CmInetNetAddr    destIpNetAddr;    /* Remote IP network address */ 
-   Bool             connUp;           /* Is connection up */
-}p5SctpAssocCb;
-
-typedef struct ipAddr
-{
- Bool      ipV4Pres;
- uint32_t  ipV4Addr;
- Bool      ipV6Pres;
- uint8_t   ipV6Addr[MAX_IPV6_LEN];
-}SctpIpAddr;
-
-typedef struct sctpDestInfo
-{
-   SctpIpAddr  destIpAddr;
-   uint16_t    destPort;
-}SctpDestInfo;
-
-typedef struct sctpCfgPerIntf
-{
-   uint16_t       port;
-   //NodeType       localNodeType; /* Local node acts as Server or client while establishing SCTP assoc */
-   uint8_t        numDestNode; 
-   SctpDestInfo   destCb[MAX_ASSOC_SUPPORTED];
-}SctpCfgPerIntf;
-
-typedef struct p5SctpParams
-{
-   SctpIpAddr     localIpAddr;
-   uint16_t       p5SctpPort;
-   uint8_t        numDestNode;
-   SctpDestInfo   destCb[MAX_DU_SUPPORTED];
-}P5SctpParams;
-
 typedef struct
 {
    P5SctpParams     sctpCfg;
