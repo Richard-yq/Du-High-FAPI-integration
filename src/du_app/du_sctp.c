@@ -1019,7 +1019,7 @@ uint8_t sctpservertest()
       }
       else
       {
-         for(assocIdx=0; assocIdx < sctpCb.numAssoc; assocIdx++)
+         for(assocIdx=0; assocIdx < sctp_test_unit; assocIdx++)
          {
             if((ret = sctpAccept(&sctpCb.assocCb[assocIdx])) != ROK)
             {//accept
@@ -1071,6 +1071,55 @@ uint8_t duP5SctpCfgReq()
    sctpCb.numAssoc = 1;
    return ROK;
 }
+
+/*******************************************************************
+ *
+ * @brief Initiates connection with peer SCTP
+ *
+ * @details
+ *
+ *    Function : sctpAccept
+ *
+ *    Functionality:
+ *       Establishes SCTP connection with peer.
+ *       Here, DU-SCTP will initate connection towards OAI-L1-SCTP
+ *
+ * @params[in] 
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ * ****************************************************************/
+uint8_t sctpAccept(p5SctpAssocCb *assocCb)
+{
+   uint8_t  ret;
+
+   DU_LOG("\nINFO   -->  SCTP : Connecting");
+
+   while(!assocCb->connUp)
+   {
+      ret = cmInetAccept(&sctpCb.p5LstnSockFd, &assocCb->peerAddr, &assocCb->sockFd);
+      if (ret == ROKDNA)
+      {
+         continue;
+      }
+      else if(ret != ROK)
+      {
+         DU_LOG("\nERROR  -->  SCTP : Failed to accept connection");
+         return RFAILED;
+      }
+      else
+      {
+         assocCb->connUp = TRUE;
+         sctpSetSockOpts(&assocCb->sockFd);
+         break;
+      }
+   }
+   DU_LOG("\nINFO   -->  SCTP : Connection established");
+
+   return ROK;
+}
+
+
 
 /**********************************************************************
          End of file
