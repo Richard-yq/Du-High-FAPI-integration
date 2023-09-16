@@ -973,8 +973,22 @@ uint8_t sctpStartReq()
 }
 */
 
+/**************************************************************************
+ * @brief Function to open the Sctp server
+ *
+ * @details
+ *
+ *      Function : sctpservertest
+ * 
+ *      Functionality:
+ *           This function opens SCTP socket server
+ *     
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ ***************************************************************************/
 // Du be server (for unit test)
-/*
+
 uint8_t sctpservertest()
 {
    uint8_t assocIdx  = 0;
@@ -1024,7 +1038,7 @@ uint8_t sctpservertest()
    }
    return (ret);
 }
-*/
+
 /**************************************************************************
  * @brief Function to configure the Sctp Params during config Request
  *

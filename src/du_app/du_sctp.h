@@ -112,6 +112,7 @@ void sctpAssocReq();
 
 /*For du is socket server*/
 //uint8_t sctpStartReq();
+uint8_t sctpservertest();
 
 void sendToDuApp(Buffer *mBuf, Event event);
 uint8_t sctpSend(Buffer *mBuf, uint8_t itfType);
