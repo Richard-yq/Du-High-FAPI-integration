@@ -231,8 +231,10 @@ uint8_t duSctpCfgReq(SctpParams sctpCfg)
    memset (&ricParams.sockFd, -1, sizeof(CmInetFd));
    fillDestNetAddr(&ricParams.destIpNetAddr, &ricParams.destIpAddr);
    fillAddrLst(&ricParams.destAddrLst, &ricParams.destIpAddr);
-
+  
 /* Fill p5 Params */
+   memset (&p5Params.sockFd, -1, sizeof(CmInetFd));
+   p5Params.recvMsgSet           = ROK;
 /*
    p5Params.destIpAddr.ipV4Pres  = sctpCfg.p5IpAddr.ipV4Pres;
    p5Params.destIpAddr.ipV4Addr  = sctpCfg.p5IpAddr.ipV4Addr;
@@ -800,13 +802,12 @@ uint8_t sctpSockPoll()
    uint32_t timeout;
    uint32_t *timeout_Ptr;
    CmInetMemInfo memInfo;
-   sctpSockPollParams f1PollParams, e2PollParams;/*p5PollParams*/
+   sctpSockPollParams f1PollParams, e2PollParams, p5PollParams;
 
    memset(&f1PollParams, 0, sizeof(sctpSockPollParams));
    memset(&e2PollParams, 0, sizeof(sctpSockPollParams));
-   /*memory set
-   memset(&5PollParams, 0, sizeof(sctpSockPollParams));
-   */
+   /*memory set*/
+   memset(&p5PollParams, 0, sizeof(sctpSockPollParams));
 
    if (f1Params.sockFd.blocking & ricParams.sockFd.blocking)
    {
@@ -824,9 +825,8 @@ uint8_t sctpSockPoll()
 
    CM_INET_FD_ZERO(&f1PollParams.readFd);
    CM_INET_FD_ZERO(&e2PollParams.readFd);
-   /*file descriptor zero
+   /*file descriptor zero*/
    CM_INET_FD_ZERO(&p5PollParams.readFd);
-   */
 
    DU_LOG("\nINFO   -->  SCTP : Polling started at DU\n");
    while(true)
@@ -845,16 +845,14 @@ uint8_t sctpSockPoll()
             DU_LOG("\nERROR  -->  SCTP : Failed to RecvMsg for E2\n");
          }
       }
-      /*process p5 polling message
+      /*process p5 polling message*/
       if(p5Params.itfState)
       {
-         if((ret = processPolling(&p5PollParams, &p5Params.sockFd, timeout_Ptr, &memInfo, p5Params.recvMsgSet)) != ROK)
+         if((ret = processP5Polling(&p5PollParams, &sctpCb.assocCb[0], timeoutPtr, &memInfo)) != ROK)
          {
-            DU_LOG("\nERROR  -->  SCTP : Failed to RecvMsg for E2\n");
+            DU_LOG("\nERROR  -->  SCTP : Failed to RecvMsg for P5\n");
          }
       }
-      
-      */
    };
    return (ret);
 }/* End of sctpSockPoll() */
@@ -989,7 +987,7 @@ uint8_t sctpStartReq()
  ***************************************************************************/
 // Du be server (for unit test)
 
-uint8_t sctpservertest()
+uint8_t sctpservertest(DuSctpLocalCb *paramPtr)
 {
    uint8_t assocIdx  = 0;
    uint8_t ret = ROK;
@@ -1027,6 +1025,11 @@ uint8_t sctpservertest()
             }
          }
       }
+   }
+
+   if(ret == ROK)
+   {/*Change state to connecting*/
+      paramPtr->itfState = DU_SCTP_CONNECTING;
    }
 
    /* Post the EVTSTARTPOLL Msg */
@@ -1122,6 +1125,63 @@ uint8_t sctpAccept(p5SctpAssocCb *assocCb)
 }
 
 
+/*******************************************************************
+ *
+ * @brief checks for valid readFd and process the InetSctpRecvMsg
+ * during polling 
+ *
+ * @details
+ *
+ *    Function : processP5Polling
+ *
+ *    Functionality:
+ *         checks for valid readFd and process the InetSctpRecvMsg
+ *         during polling
+ *
+ * @params[in]  Params required for polling
+ * @params[in]  SockFd for file descriptor
+ * @params[in]  timeoutPtr indicates the timeout value
+ * @params[in]  MemInfo indicates memory region
+ *
+ * @return ROK     - success
+ *         RFAILED - failure
+ *
+ * ****************************************************************/
+
+ 
+uint8_t processP5Polling(sctpSockPollParams *pollParams, p5SctpAssocCb *assocCb, uint32_t *timeoutPtr, CmInetMemInfo *memInfo)
+{
+   uint16_t ret = ROK;
+
+   CM_INET_FD_SET(&assocCb->sockFd, &pollParams->readFd);
+   ret = cmInetSelect(&pollParams->readFd, NULLP, timeoutPtr, &pollParams->numFd);
+   if(CM_INET_FD_ISSET(&assocCb->sockFd, &pollParams->readFd))
+   {
+      CM_INET_FD_CLR(&assocCb->sockFd, &pollParams->readFd);
+      ret = cmInetSctpRecvMsg(&assocCb->sockFd, &pollParams->addr, &pollParams->port, memInfo, &pollParams->mBuf, \
+          &pollParams->bufLen, &pollParams->info, &pollParams->flag, &pollParams->ntfy);
+      if(assocCb->connUp & (ret != ROK))
+      {
+         assocCb->bReadFdSet = RFAILED;
+      }
+      else
+      {
+         if(((pollParams->flag & CM_INET_SCTP_MSG_NOTIFICATION) != 0) && (ret == ROK))
+         {
+            ret = sctpNtfyHdlr(assocCb, &pollParams->ntfy);
+            if(ret != ROK)
+            {
+               DU_LOG("\nERROR  -->  SCTP : Failed to process sctp notify msg\n");
+            }
+         }
+         else
+         {
+            ODU_PUT_MSG_BUF(pollParams->mBuf);
+         }
+      } 
+  }
+  return ROK;
+}/* End of processP5Polling() */
 
 /**********************************************************************
          End of file
