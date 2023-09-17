@@ -84,10 +84,21 @@ typedef struct
    CmInetNetAddr    destIpNetAddr;    /* Refers to the destination Addr in CmInetNet Addr format */
 }DuSctpDestCb;
 
+typedef struct
+{
+   uint8_t               itfState;         /* determines the interface State*/
+   uint16_t              destPort;         /* Refers to the destination port of F1/E2 */
+   uint16_t              srcPort;          /* Refers to respective src port of DU */
+   uint32_t              assocId;          
+   bool             recvMsgSet;
+   CmInetFd         sockFd;           /* Socket file descriptor */
+}DuSctpLocalCb;
+
+
 /* Global variable declaration */
 DuSctpDestCb f1Params;     /* SCTP configurations at DU */ 
 DuSctpDestCb ricParams;    /* SCTP configurations at DU */ 
-DuSctpDestCb p5Params;    /* SCTP configurations at DU */ 
+DuSctpLocalCb p5Params;    /* SCTP configurations at DU */ 
 
 /*-------------------------------------------*/
 /*Add sctpcb for du is socket server*/
@@ -112,7 +123,7 @@ void sctpAssocReq();
 
 /*For du is socket server*/
 //uint8_t sctpStartReq();
-uint8_t sctpservertest();
+uint8_t sctpservertest(DuSctpLocalCb *paramPtr);
 
 void sendToDuApp(Buffer *mBuf, Event event);
 uint8_t sctpSend(Buffer *mBuf, uint8_t itfType);
