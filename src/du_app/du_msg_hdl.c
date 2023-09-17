@@ -1368,7 +1368,8 @@ uint8_t duSendSchCfg()
 uint8_t duLayerConfigComplete()
 {
    uint8_t ret = ROK;
-
+   /*Add sctp local Cb*/
+   DuSctpLocalCb *paramPtr = NULLP;
    DU_LOG("\nINFO   -->  DU_APP : Configuring all Layer is complete");
       /*Finish SCTP params assign。*/
 
@@ -1389,18 +1390,19 @@ uint8_t duLayerConfigComplete()
       DU_LOG("\nERROR  -->  DU_APP : Failed to send AssocReq E2");
       ret = RFAILED;
    }
-   /* p5 SCTP associate request
-    if((ret = duSctpAssocReq(p5_INTERFACE)) != ROK)
-   {
-      DU_LOG("\nERROR  -->  DU_APP : Failed to send AssocReq E2");
-      ret = RFAILED;
-   } */
-
    /*If Du high be SCTP server and Start DU-SCTP to listen on incoming connection */
    /*P5 SCTP socket server*/
    //sctpStartReq()
    //SCTP socket server unit test
-   //sctpservertest();
+   /*Alloc DuSctpLocalCb*/
+   DU_ALLOC(paramPtr, sizeof(DuSctpLocalCb));
+   if(paramPtr == NULLP)
+   {
+      DU_LOG("\nERROR  -->  DU_APP : Failed to allocate memory");
+      return RFAILED;
+   }
+   paramPtr=&p5Params;
+   ret=sctpservertest(paramPtr);
 
    return (ret); 
 } 
