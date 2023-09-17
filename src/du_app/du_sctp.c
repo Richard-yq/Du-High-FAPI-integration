@@ -1029,13 +1029,13 @@ uint8_t sctpservertest()
       }
    }
 
-   if(ret == ROK)
+   /* Post the EVTSTARTPOLL Msg */
+   if(!pollingState)
    {
-      if(sctpSockPoll() != ROK)
-      {
-         DU_LOG("\nERROR  -->  SCTP: Polling failed to start at DU");
-      }
+      pollingState = TRUE;/*Fill sctp post event EVTSTARTPOLL*/
+      duFillSctpPst(&pst, EVTSTARTPOLL);
    }
+   
    return (ret);
 }
 
@@ -1069,6 +1069,8 @@ uint8_t duP5SctpCfgReq()
    sctpCb.assocCb[0].connUp = false;
 
    sctpCb.numAssoc = 1;
+   /* Set polling to FALSE */
+   pollingState = FALSE;
    return ROK;
 }
 
