@@ -233,6 +233,7 @@ uint8_t duSctpCfgReq(SctpParams sctpCfg)
    fillAddrLst(&ricParams.destAddrLst, &ricParams.destIpAddr);
   
 /* Fill p5 Params */
+   p5Params.itfState             = DU_SCTP_DOWN;
    memset (&p5Params.sockFd, -1, sizeof(CmInetFd));
    p5Params.recvMsgSet           = ROK;
 /*
