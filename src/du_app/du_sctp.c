@@ -1175,6 +1175,14 @@ uint8_t processP5Polling(sctpSockPollParams *pollParams, p5SctpAssocCb *assocCb,
                DU_LOG("\nERROR  -->  SCTP : Failed to process sctp notify msg\n");
             }
          }
+
+         /*Here I need to create a new function to handle P5 message received from OAI L1
+         else if(assocCb->connUp)
+         {  
+            P5PMsgHdlr(&assocCb->duId, pollParams->mBuf);
+            ODU_PUT_MSG_BUF(pollParams->mBuf);
+         }
+         */
          else
          {
             ODU_PUT_MSG_BUF(pollParams->mBuf);
