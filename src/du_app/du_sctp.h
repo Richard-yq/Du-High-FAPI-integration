@@ -134,12 +134,14 @@ uint8_t establishReq(DuSctpDestCb *paramPtr);
 uint8_t duSctpAssocReq(uint8_t itfType);
 uint8_t duFillSctpPst(Pst *pst, Event event);
 /*Establishes P5 SCTP connection with peer*/
-uint8_t sctpAccept(p5SctpAssocCb *assocCb)
+uint8_t sctpAccept(p5SctpAssocCb *assocCb);
 uint8_t sctpSetSockOpts(CmInetFd *sock_Fd);
 uint8_t processPolling(sctpSockPollParams *pollParams, CmInetFd *sockFd, uint32_t *timeoutPtr, CmInetMemInfo *memInfo, bool recvMsgSet);
 uint8_t sctpSockPoll();
 /*For du is socket server*/
 uint8_t duP5SctpCfgReq();
+/*P5 checks for valid readFd and process the InetSctpRecvMsg during polling*/
+uint8_t processP5Polling(sctpSockPollParams *pollParams, p5SctpAssocCb *assocCb, uint32_t *timeoutPtr, CmInetMemInfo *memInfo);
 #endif
 
 /**********************************************************************
